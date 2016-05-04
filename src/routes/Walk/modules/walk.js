@@ -3,15 +3,21 @@ import { mon }  from 'modules/State'
 // ------------------------------------
 // Constants
 // ------------------------------------
-export const COUNTER_INCREMENT = 'COUNTER_INCREMENT'
+export const NEXT = 'NEXT'
+export const RUN = 'RUN'
 
 // ------------------------------------
 // Actions
 // ------------------------------------
-export function increment (value = 1) {
+export function next () {
   return {
-    type: COUNTER_INCREMENT,
-    payload: value
+    type: NEXT
+  }
+}
+
+export function run () {
+  return {
+    type: RUN
   }
 }
 
@@ -23,35 +29,54 @@ export function increment (value = 1) {
     you'd probably want to dispatch an action of COUNTER_DOUBLE and let the
     reducer take care of this logic.  */
 
-export const doubleAsync = () => {
-  return (dispatch, getState) => {
+export const nextAsync = () => {
+  return (dispatch) => {
     return new Promise((resolve) => {
       setTimeout(() => {
-        dispatch(increment(getState().walk))
+        dispatch(next())
         resolve()
-      }, 200)
+      }, 3000)
+    })
+  }
+}
+
+export const runGo = () => {
+  return (dispatch) => {
+    dispatch(run())
+    return new Promise((resolve) => {
+      setTimeout(() => {
+        dispatch(next())
+      }, 3000)
     })
   }
 }
 
 export const actions = {
-  increment,
-  doubleAsync
+  next,
+  nextAsync,
+  run,
+  runGo
 }
 
 // ------------------------------------
 // Action Handlers
 // ------------------------------------
 const ACTION_HANDLERS = {
-  [COUNTER_INCREMENT]: (state, action) => state + action.payload
+  [NEXT]: (state, action) => Object.assign({}, state.next(), {
+    goOn: state.isRunning
+  }),
+  [RUN]: (state, action) => Object.assign({}, state, {
+    isRunning: true,
+    goOn: false
+  })
 }
 
 // ------------------------------------
 // Reducer
 // ------------------------------------
-const initialState = 0
+const initialState = Object.assign({}, mon)
 export default function counterReducer (state = initialState, action) {
   const handler = ACTION_HANDLERS[action.type]
-
+  console.log(state)
   return handler ? handler(state, action) : state
 }
