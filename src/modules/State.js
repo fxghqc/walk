@@ -39,8 +39,4 @@ fri.next = () => {
   return mon
 }
 
-export mon
-export tue
-export wed
-export thu
-export fri
+export { mon, tue, wed, thu, fri }

@@ -1,3 +1,5 @@
+import { mon }  from 'modules/State'
+
 // ------------------------------------
 // Constants
 // ------------------------------------
@@ -25,7 +27,7 @@ export const doubleAsync = () => {
   return (dispatch, getState) => {
     return new Promise((resolve) => {
       setTimeout(() => {
-        dispatch(increment(getState().counter))
+        dispatch(increment(getState().walk))
         resolve()
       }, 200)
     })
